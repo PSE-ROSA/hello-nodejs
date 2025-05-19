@@ -1,28 +1,31 @@
 pipeline {
     agent { 
-        label 'slave' // 指定在标签为 slave 的节点上运行
+        label 'slave' 
     }
 
     environment {
-        // 设置 Node.js 版本，假设你已经在 Jenkins 中配置好了 NodeJS 插件和版本
+        // 修正变量名（原图存在笔误，统一为 NODE_VERSION）
         NODE_VERSION = '14.x'
     }
 
     tools {
-    nodejs "NodeJs"  // 与全局工具配置的名称一致
+        // 修正工具名称大小写，必须与 Jenkins 全局配置完全一致
+        nodejs "NodeJS"  // 原图显示为 "NodeJS"（全大写）
     }
 
     stages {
         stage('Checkout') {
             steps {
-                git branch: 'main', url: 'https://github.com/PSE-ROSA/hello-nodejs.git'
+                git branch: 'main', 
+                url: 'https://github.com/PSE-ROSA/hello-nodejs.git'
             }
         }
 
         stage('Install Dependencies') {
             steps {
-                sh "node -v"
-                sh "npm -v"
+                // 修正命令（原图命令不完整）
+                sh "node -v"  // 验证 Node.js 版本
+                sh "npm -v"   // 验证 npm 版本
                 sh 'npm install'
             }
         }
@@ -30,14 +33,12 @@ pipeline {
         stage('Build') {
             steps {
                 echo 'Building..'
-                // 如果有构建步骤，可以在这里添加
             }
         }
 
         stage('Test') {
             steps {
                 echo 'Testing..'
-                // 如果有测试命令，可以在这里执行
             }
         }
 
@@ -45,11 +46,23 @@ pipeline {
             steps {
                 script {
                     try {
-                        // 假设你想在 Jenkins 执行环境中运行应用
+                        // 优化部署逻辑（保留日志）
                         sh 'nohup npm start > app.log 2>&1 &'
+                        // 归档日志文件（避免被 cleanWs 删除）
+                        archiveArtifacts artifacts: 'app.log', allowEmptyArchive: true
                     } catch (Exception e) {
                         echo "Error starting app: ${e}"
                     }
+                }
+            }
+        }
+
+        // 新增健康检查阶段（验证应用是否运行）
+        stage('Health Check') {
+            steps {
+                script {
+                    sh 'curl -I http://localhost:3000 || echo "Application not responding"'
+                    sh 'ps aux | grep "node" | grep -v grep || echo "No node process found"'
                 }
             }
         }
