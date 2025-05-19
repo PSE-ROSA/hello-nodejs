@@ -10,7 +10,7 @@ pipeline {
 
     tools {
         // 修正工具名称大小写，必须与 Jenkins 全局配置完全一致
-        nodejs "NodeJS"  // 原图显示为 "NodeJS"（全大写）
+        nodejs "NodeJs"  // 原图显示为 "NodeJS"（全大写）
     }
 
     stages {
