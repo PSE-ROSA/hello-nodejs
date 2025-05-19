@@ -3,10 +3,14 @@ pipeline {
         label 'slave' // 指定在标签为 slave 的节点上运行
     }
 
-    // environment {
-    //     // 设置 Node.js 版本，假设你已经在 Jenkins 中配置好了 NodeJS 插件和版本
-    //     NODE_VERSION = '14.x'
-    // }
+    environment {
+        // 设置 Node.js 版本，假设你已经在 Jenkins 中配置好了 NodeJS 插件和版本
+        NODE_VERSION = '14.x'
+    }
+
+    tools {
+    nodejs "NodeJS-14.x"  // 与全局工具配置的名称一致
+    }
 
     stages {
         stage('Checkout') {
