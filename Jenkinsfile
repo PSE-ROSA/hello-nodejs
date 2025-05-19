@@ -9,7 +9,7 @@ pipeline {
     }
 
     tools {
-    nodejs "NodeJS-14.x"  // 与全局工具配置的名称一致
+    NodeJs "NodeJS-14.x"  // 与全局工具配置的名称一致
     }
 
     stages {
